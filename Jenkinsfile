@@ -3,9 +3,8 @@ pipeline {
 
     environment {
         NODE_HOME = tool name: 'Soumya'
-        PATH = "${NODE_HOME}/bin:${env.PATH}"
         NPM_GLOBAL = bat(script: 'npm root -g', returnStdout: true).trim()
-        PATH = "${env.PATH};${NPM_GLOBAL}"
+        PATH = "${NODE_HOME}/bin:${env.PATH};${NPM_GLOBAL}/.bin"
     }
 
     stages {
