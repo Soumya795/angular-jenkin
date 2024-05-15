@@ -22,18 +22,16 @@ pipeline {
         stage('Install Angular CLI') {
             steps {
                 bat 'npm install -g @angular/cli'
-                bat 'set PATH=%PATH%;%NODE_HOME%\\node_modules\\.bin;%APPDATA%\\npm'
+                bat 'set PATH=%PATH%;%APPDATA%\\npm'
             }
         }
 
         stage('Build') {
             steps {
-                script {
-                    def nodeBinPath = bat(script: 'echo %NODE_HOME%\\node_modules\\.bin', returnStdout: true).trim()
-                    def npmBinPath = bat(script: 'echo %APPDATA%\\npm', returnStdout: true).trim()
-                    bat "set PATH=%PATH%;${nodeBinPath};${npmBinPath}"
-                    bat 'ng build --prod'
-                }
+                bat '''
+                set PATH=%PATH%;%APPDATA%\\npm
+                ng build --prod
+                '''
             }
         }
 
