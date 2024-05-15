@@ -30,7 +30,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%PATH%;%APPDATA%\\npm
-                ng build --prod
+                ng build --configuration production
                 '''
             }
         }
@@ -62,3 +62,4 @@ pipeline {
         }
     }
 }
+
