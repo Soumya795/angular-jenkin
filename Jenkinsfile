@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_HOME = tool name: 'Soumya'  // Updated to match your NodeJS installation name
+        NODE_HOME = tool name: 'Soumya'
         PATH = "${NODE_HOME}/bin:${env.PATH}"
     }
 
@@ -15,13 +15,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'ng build --prod'
+                bat 'ng build --prod'
             }
         }
 
@@ -34,9 +34,9 @@ pipeline {
                     def tomcatPort = '8080'
                     def tomcatWebapp = 'ROOT'
 
-                    sh """
-                        sshpass -p ${tomcatPassword} ssh ${tomcatUser}@${tomcatHost} 'rm -rf /path/to/tomcat/webapps/${tomcatWebapp}/*'
-                        sshpass -p ${tomcatPassword} scp -r dist/angular-jenkin/* ${tomcatUser}@${tomcatHost}:/path/to/tomcat/webapps/${tomcatWebapp}/
+                    bat """
+                        del /Q /S \\path\\to\\tomcat\\webapps\\${tomcatWebapp}\\*
+                        xcopy /E /I /Y dist\\angular-jenkin\\* \\path\\to\\tomcat\\webapps\\${tomcatWebapp}
                     """
                 }
             }
