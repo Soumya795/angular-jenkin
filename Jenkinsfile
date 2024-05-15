@@ -38,16 +38,20 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatUser = 'your-tomcat-username'
-                    def tomcatPassword = 'your-tomcat-password'
-                    def tomcatHost = 'your-tomcat-host'
-                    def tomcatPort = '8080'
-                    def tomcatWebapp = 'ROOT'
+                    def tomcatPath = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\ROOT'
 
-                    bat """
-                        del /Q /S \\path\\to\\tomcat\\webapps\\${tomcatWebapp}\\*
-                        xcopy /E /I /Y dist\\angular-jenkin\\* \\path\\to\\tomcat\\webapps\\${tomcatWebapp}
-                    """
+                    // Check if the Tomcat directory exists
+                    bat 'if not exist "' + tomcatPath + '" mkdir "' + tomcatPath + '"'
+
+                    // Clear the existing ROOT directory
+                    bat 'del /Q /S "' + tomcatPath + '\\*"'
+
+                    // Copy the new build files to the ROOT directory
+                    bat 'xcopy /E /I /Y dist\\angular-jenkin\\* "' + tomcatPath + '"'
+
+                    // Optionally, restart Tomcat (ensure you have the right permissions)
+                    bat '"C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\shutdown.bat"'
+                    bat '"C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\startup.bat"'
                 }
             }
         }
