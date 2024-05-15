@@ -39,12 +39,12 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatRootPath = "${env.CATALINA_HOME}\\webapps\\ROOT"
+                    def tomcatPath = "${env.CATALINA_HOME}\\webapps\\ROOT"
 
                     bat """
-                        if not exist "${tomcatRootPath}" mkdir "${tomcatRootPath}"
-                        del /Q /S "${tomcatRootPath}\\*"
-                        xcopy /E /I /Y dist\\angular-jenkin\\* "${tomcatRootPath}"
+                        if not exist "${tomcatPath}" mkdir "${tomcatPath}"
+                        del /Q /S "${tomcatPath}\\*"
+                        xcopy /E /I /Y dist\\angular-jenkin\\* "${tomcatPath}"
                     """
                 }
             }
@@ -56,7 +56,6 @@ pipeline {
                     bat """
                         set CATALINA_HOME=${env.CATALINA_HOME}
                         cd "${env.CATALINA_HOME}\\bin"
-                        shutdown.bat
                         startup.bat
                     """
                 }
