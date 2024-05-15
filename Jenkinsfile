@@ -38,17 +38,20 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatUser = 'admin'
-                    def tomcatPassword = 'admin'
-                    def tomcatHost = 'localhost'
-                    def tomcatPort = '8081'
-                    def tomcatWebapp = 'ROOT'
+                    def tomcatPath = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\ROOT"
 
                     bat """
-                        del /Q /S \\path\\to\\tomcat\\webapps\\${tomcatWebapp}\\*
-                        xcopy /E /I /Y dist\\angular-jenkin\\* \\path\\to\\tomcat\\webapps\\${tomcatWebapp}
+                        del /Q /S "${tomcatPath}\\*"
+                        xcopy /E /I /Y dist\\angular-jenkin\\* "${tomcatPath}"
                     """
                 }
+            }
+        }
+
+        stage('Restart Tomcat') {
+            steps {
+                bat 'net stop Tomcat9'
+                bat 'net start Tomcat9'
             }
         }
     }
