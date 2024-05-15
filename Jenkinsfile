@@ -47,13 +47,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Restart Tomcat') {
-            steps {
-                bat 'net stop Tomcat9'
-                bat 'net start Tomcat9'
-            }
-        }
     }
 
     post {
