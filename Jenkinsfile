@@ -4,7 +4,6 @@ pipeline {
     environment {
         NODE_HOME = tool name: 'Soumya'
         PATH = "${NODE_HOME}/bin:${env.PATH}"
-        CATALINA_HOME = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0'
     }
 
     stages {
@@ -39,7 +38,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatPath = "${env.CATALINA_HOME}\\webapps\\ROOT"
+                    def tomcatPath = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\ROOT"
 
                     bat """
                         if not exist "${tomcatPath}" mkdir "${tomcatPath}"
@@ -53,9 +52,13 @@ pipeline {
         stage('Restart Tomcat') {
             steps {
                 script {
+                    def tomcatBinPath = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin"
+
                     bat """
-                        set CATALINA_HOME=${env.CATALINA_HOME}
-                        cd "${env.CATALINA_HOME}\\bin"
+                        set CATALINA_HOME=C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0
+                        cd "${tomcatBinPath}"
+                        shutdown.bat
+                        timeout /t 5
                         startup.bat
                     """
                 }
