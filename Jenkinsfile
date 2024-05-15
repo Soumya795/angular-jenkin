@@ -22,28 +22,31 @@ pipeline {
         stage('Install Angular CLI') {
             steps {
                 bat 'npm install -g @angular/cli'
+                bat 'set PATH=%PATH%;%APPDATA%\\npm'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'ng build --configuration production'
+                bat '''
+                set PATH=%PATH%;%APPDATA%\\npm
+                ng build --configuration production
+                '''
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatUser = 'admin'
-                    def tomcatPassword = 'admin'
-                    def tomcatHost = 'localhost'
-                    def tomcatPort = '8081'
+                    def tomcatUser = 'your-tomcat-username'
+                    def tomcatPassword = 'your-tomcat-password'
+                    def tomcatHost = 'your-tomcat-host'
+                    def tomcatPort = '8080'
                     def tomcatWebapp = 'ROOT'
-                    def tomcatPath = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\${tomcatWebapp}"
 
                     bat """
-                        del /Q /S ${tomcatPath}\\*
-                        xcopy /E /I /Y dist\\angular-jenkin\\* ${tomcatPath}
+                        del /Q /S \\path\\to\\tomcat\\webapps\\${tomcatWebapp}\\*
+                        xcopy /E /I /Y dist\\angular-jenkin\\* \\path\\to\\tomcat\\webapps\\${tomcatWebapp}
                     """
                 }
             }
@@ -59,4 +62,3 @@ pipeline {
         }
     }
 }
-
