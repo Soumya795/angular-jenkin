@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_HOME = tool name: 'NodeJS'
+        NODE_HOME = tool name: 'Soumya'
         PATH = "${NODE_HOME}/bin:${env.PATH}"
     }
 
