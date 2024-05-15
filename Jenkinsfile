@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         NODE_HOME = tool name: 'Soumya'
-        NPM_GLOBAL = bat(script: 'npm root -g', returnStdout: true).trim()
-        PATH = "${NODE_HOME}/bin:${env.PATH};${NPM_GLOBAL}/.bin"
+        PATH = "${NODE_HOME}/bin:${env.PATH}"
     }
 
     stages {
@@ -23,12 +22,18 @@ pipeline {
         stage('Install Angular CLI') {
             steps {
                 bat 'npm install -g @angular/cli'
+                bat 'set PATH=%PATH%;%NODE_HOME%\\node_modules\\.bin;%APPDATA%\\npm'
             }
         }
 
         stage('Build') {
             steps {
-                bat 'ng build --prod'
+                script {
+                    def nodeBinPath = bat(script: 'echo %NODE_HOME%\\node_modules\\.bin', returnStdout: true).trim()
+                    def npmBinPath = bat(script: 'echo %APPDATA%\\npm', returnStdout: true).trim()
+                    bat "set PATH=%PATH%;${nodeBinPath};${npmBinPath}"
+                    bat 'ng build --prod'
+                }
             }
         }
 
