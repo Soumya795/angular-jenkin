@@ -4,6 +4,7 @@ pipeline {
     environment {
         NODE_HOME = tool name: 'Soumya'
         PATH = "${NODE_HOME}/bin:${env.PATH}"
+        CATALINA_HOME = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0'
     }
 
     stages {
@@ -38,20 +39,26 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatPath = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\ROOT'
+                    def tomcatRootPath = "${env.CATALINA_HOME}\\webapps\\ROOT"
 
-                    // Check if the Tomcat directory exists
-                    bat 'if not exist "' + tomcatPath + '" mkdir "' + tomcatPath + '"'
+                    bat """
+                        if not exist "${tomcatRootPath}" mkdir "${tomcatRootPath}"
+                        del /Q /S "${tomcatRootPath}\\*"
+                        xcopy /E /I /Y dist\\angular-jenkin\\* "${tomcatRootPath}"
+                    """
+                }
+            }
+        }
 
-                    // Clear the existing ROOT directory
-                    bat 'del /Q /S "' + tomcatPath + '\\*"'
-
-                    // Copy the new build files to the ROOT directory
-                    bat 'xcopy /E /I /Y dist\\angular-jenkin\\* "' + tomcatPath + '"'
-
-                    // Optionally, restart Tomcat (ensure you have the right permissions)
-                    bat '"C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\shutdown.bat"'
-                    bat '"C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\startup.bat"'
+        stage('Restart Tomcat') {
+            steps {
+                script {
+                    bat """
+                        set CATALINA_HOME=${env.CATALINA_HOME}
+                        cd "${env.CATALINA_HOME}\\bin"
+                        shutdown.bat
+                        startup.bat
+                    """
                 }
             }
         }
