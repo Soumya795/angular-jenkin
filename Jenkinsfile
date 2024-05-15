@@ -38,9 +38,9 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    def tomcatUser = 'your-tomcat-username'
-                    def tomcatPassword = 'your-tomcat-password'
-                    def tomcatHost = 'your-tomcat-host'
+                    def tomcatUser = 'admin'
+                    def tomcatPassword = 'admin'
+                    def tomcatHost = 'localhost'
                     def tomcatPort = '8081'
                     def tomcatWebapp = 'ROOT'
 
